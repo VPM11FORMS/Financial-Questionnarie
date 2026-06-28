@@ -1540,53 +1540,282 @@ document.getElementById('btnSubmitFormspree').addEventListener('click', function
   var btn = document.getElementById('btnSubmitFormspree');
 
   // Collect all form values
+  // ── Helpers to read dynamic tables ────────────────────────────────────────
+  function readAsset(label, idx) {
+    var valEl = document.querySelector('.asset-val[data-idx="' + idx + '"]');
+    var incEl = document.querySelector('.asset-inc[data-idx="' + idx + '"]');
+    var val = valEl ? (valEl.value || '$0') : '$0';
+    var inc = incEl ? (incEl.value || '$0') : '$0';
+    return label + ' — Value: ' + val + ' | Est. Monthly Income: ' + inc;
+  }
+  function readInsurance(type, idx) {
+    var prov = document.querySelector('.ins-provider[data-idx="' + idx + '"]');
+    var cov  = document.querySelector('.ins-coverage[data-idx="' + idx + '"]');
+    var prem = document.querySelector('.ins-premium[data-idx="' + idx + '"]');
+    var ben  = document.querySelector('.ins-beneficiary[data-idx="' + idx + '"]');
+    return type +
+      ' | Provider: ' + (prov && prov.value ? prov.value : '—') +
+      ' | Coverage: ' + (cov  && cov.value  ? cov.value  : '—') +
+      ' | Premium: '  + (prem && prem.value ? prem.value : '—') +
+      ' | Beneficiary: ' + (ben && ben.value ? ben.value : '—');
+  }
+  function readAdvisor(role, idx) {
+    var nm  = document.querySelector('.adv-name[data-idx="' + idx + '"]');
+    var fm  = document.querySelector('.adv-firm[data-idx="' + idx + '"]');
+    var ph  = document.querySelector('.adv-phone[data-idx="' + idx + '"]');
+    var dt  = document.querySelector('.adv-date[data-idx="' + idx + '"]');
+    return role +
+      ' | Name: '  + (nm && nm.value ? nm.value : '—') +
+      ' | Firm: '  + (fm && fm.value ? fm.value : '—') +
+      ' | Phone: ' + (ph && ph.value ? ph.value : '—') +
+      ' | Last Contact: ' + (dt && dt.value ? dt.value : '—');
+  }
+  function readEstate(label, idx) {
+    var you   = document.querySelector('.est-you[data-idx="' + idx + '"]');
+    var sp    = document.querySelector('.est-spouse[data-idx="' + idx + '"]');
+    var dt    = document.querySelector('.est-date[data-idx="' + idx + '"]');
+    var atty  = document.querySelector('.est-atty[data-idx="' + idx + '"]');
+    var notes = document.querySelector('.est-notes[data-idx="' + idx + '"]');
+    return label +
+      ' | You: '      + (you   && you.value   ? you.value   : '—') +
+      ' | Spouse: '   + (sp    && sp.value    ? sp.value    : '—') +
+      ' | Date: '     + (dt    && dt.value    ? dt.value    : '—') +
+      ' | Attorney: ' + (atty  && atty.value  ? atty.value  : '—') +
+      ' | Notes: '    + (notes && notes.value ? notes.value : '—');
+  }
+  function readChildren() {
+    var list = document.getElementById('childrenList');
+    if (!list) return '(none)';
+    var rows = list.querySelectorAll('tr, .child-row');
+    if (!rows.length) {
+      var inputs = list.querySelectorAll('input, select');
+      if (!inputs.length) return '(none entered)';
+      var parts = [];
+      inputs.forEach(function(inp) { if (inp.value) parts.push((inp.placeholder || inp.name || 'field') + ': ' + inp.value); });
+      return parts.join(' | ') || '(none entered)';
+    }
+    var lines = [];
+    rows.forEach(function(row, i) {
+      var inputs = row.querySelectorAll('input, select');
+      var parts = [];
+      inputs.forEach(function(inp) { if (inp.value) parts.push((inp.placeholder || 'field') + ': ' + inp.value); });
+      if (parts.length) lines.push('Child/Ben ' + (i+1) + ': ' + parts.join(' | '));
+    });
+    return lines.join(' || ') || '(none entered)';
+  }
+  function readConcerns() {
+    if (typeof concernValues === 'undefined') return '(not rated)';
+    var keys = Object.keys(concernValues);
+    if (!keys.length) return '(not rated)';
+    return keys.map(function(k) { return k + ': ' + (concernValues[k] || 0) + '/5'; }).join(' | ');
+  }
+
+  // ── Budget totals ────────────────────────────────────────────────────────
+  var incA    = sumInputs('income-input');
+  var expB    = sumInputs('expense-input');
+  var discC   = sumInputs('disc-input');
+  var surplus = incA - expB - discC;
+
+  // ── Retirement age (input + slider fallback) ─────────────────────────────
+  var raEl  = document.getElementById('retireAge');
+  var raVal = (raEl && raEl.value) ? raEl.value : '';
+  if (!raVal) { var sl1 = document.getElementById('retireAgeSlider'); if (sl1) raVal = sl1.value; }
+  if (!raVal) raVal = '65';
+  var srEl  = document.getElementById('spouseRetireAge');
+  var srVal = (srEl && srEl.value) ? srEl.value : '';
+  if (!srVal) { var sl2 = document.getElementById('spouseRetireAgeSlider'); if (sl2) srVal = sl2.value; }
+  if (!srVal) srVal = '65';
+
   var payload = {
     access_key: 'b1a2410b-f2ea-424f-a771-bf63a9454cb3',
-    subject: 'New FPQ - ' + (gv('clientName') || 'Client'),
+    subject: 'New FPQ Submission - ' + (gv('clientName') || 'Client'),
     from_name: 'Financial Planning Questionnaire',
-    // Section 1 - Client Profile
-    clientName:       gv('clientName'),
-    clientDOB:        gv('clientDOB'),
-    clientMarital:    data.clientMarital || '',
-    clientGender:     data.clientGender || '',
-    clientState:      gv('clientState'),
-    clientCitizen:    data.clientCitizen || '',
-    clientOccupation: gv('clientOccupation'),
-    clientHealth:     data.clientHealth || '',
-    clientSmoker:     data.clientSmoker || '',
-    // Spouse
-    spouseName:       gv('spouseName'),
-    spouseDOB:        gv('spouseDOB'),
-    spouseOccupation: gv('spouseOccupation'),
-    spouseHealth:     data.spouseHealth || '',
-    // Section 3 - Retirement
-    retirementAge:    gv('retireAge'),
-    spouseRetireAge:  gv('spouseRetireAge'),
-    currentlyRetired: data.currentlyRetired || '',
-    liveWhere:        data.liveWhere || '',
-    workRetire:       data.workRetire || '',
-    activities:       (data.retireActivities || []).join(', '),
-    idealRetirement:  gv('idealRetirement'),
-    ltcInsurance:     data.ltcInsurance || '',
-    leaveLegacy:      data.leaveLegacy || '',
-    legacyAmount:     gv('legacyAmount'),
-    estatePlanStatus: data.estatePlanStatus || '',
-    // Section 4 - Budget
-    totalIncome:        formatDollar(sumInputs('income-input')),
-    totalBasicExp:      formatDollar(sumInputs('expense-input')),
-    totalDiscretionary: formatDollar(sumInputs('disc-input')),
-    monthlySurplus:     formatDollar(sumInputs('income-input') - sumInputs('expense-input') - sumInputs('disc-input')),
-    savingsShortTerm:   gv('savingsShort'),
-    savingsMidTerm:     gv('savingsMid'),
-    savingsLongTerm:    gv('savingsLong'),
-    // Section 5 - Assets
-    totalGuaranteedIncome: formatDollar(sumInputs('guar-input')),
-    totalAssets:           formatDollar(sumInputs('asset-val')),
-    yearsInRetirement:     gv('gapYears'),
-    inflationAssumption:   gv('gapInflation'),
-    advisorNotes:          gv('advisorNotes'),
-    // Submission info
-    submittedAt: new Date().toLocaleString('en-US')
+
+    'SECTION 1 - CLIENT PROFILE': '=======================',
+    'Full Name':              gv('clientName')           || '(not provided)',
+    'Date of Birth':          gv('clientDOB')            || '(not provided)',
+    'Marital Status':         data.clientMarital         || '(not provided)',
+    'Gender':                 data.clientGender          || '(not provided)',
+    'State of Domicile':      gv('clientState')          || '(not provided)',
+    'US Citizen':             data.clientCitizen         || '(not provided)',
+    'Country if non-citizen': gv('clientCitizenCountry') || 'n/a',
+    'Occupation':             gv('clientOccupation')     || '(not provided)',
+    'Health Status':          data.clientHealth          || '(not provided)',
+    'Smoker':                 data.clientSmoker          || '(not provided)',
+    'Years in Community':     gv('communityYears')       || '(not provided)',
+
+    'SPOUSE': '-----------------------',
+    'Spouse Full Name':       gv('spouseName')           || '(not provided)',
+    'Spouse Date of Birth':   gv('spouseDOB')            || '(not provided)',
+    'Spouse State':           gv('spouseState')          || '(not provided)',
+    'Spouse Marital Status':  data.spouseMarital         || '(not provided)',
+    'Spouse Gender':          data.spouseGender          || '(not provided)',
+    'Spouse Citizen':         data.spouseCitizen         || '(not provided)',
+    'Spouse Country':         gv('spouseCitizenCountry') || 'n/a',
+    'Spouse Occupation':      gv('spouseOccupation')     || '(not provided)',
+    'Spouse Health':          data.spouseHealth          || '(not provided)',
+    'Spouse Smoker':          data.spouseSmoker          || '(not provided)',
+
+    'CLIENT PARENTS': '-----------------------',
+    'Client Father Living':      gv('pCFLiving')         || '(not provided)',
+    'Client Father Age':         gv('pCFAge')            || '(not provided)',
+    'Client Father Health':      gv('pCFHealth')         || '(not provided)',
+    'Client Father Dependent':   gv('pCFDep')            || '(not provided)',
+    'Client Father Inheritance': gv('pCFInh')            || '(not provided)',
+    'Client Mother Living':      gv('pCMLiving')         || '(not provided)',
+    'Client Mother Age':         gv('pCMAge')            || '(not provided)',
+    'Client Mother Health':      gv('pCMHealth')         || '(not provided)',
+    'Client Mother Dependent':   gv('pCMDep')            || '(not provided)',
+    'Client Mother Inheritance': gv('pCMInh')            || '(not provided)',
+
+    'SPOUSE PARENTS': '-----------------------',
+    'Spouse Father Living':      gv('pSFLiving')         || '(not provided)',
+    'Spouse Father Age':         gv('pSFAge')            || '(not provided)',
+    'Spouse Father Health':      gv('pSFHealth')         || '(not provided)',
+    'Spouse Father Dependent':   gv('pSFDep')            || '(not provided)',
+    'Spouse Father Inheritance': gv('pSFInh')            || '(not provided)',
+    'Spouse Mother Living':      gv('pSMLiving')         || '(not provided)',
+    'Spouse Mother Age':         gv('pSMAge')            || '(not provided)',
+    'Spouse Mother Health':      gv('pSMHealth')         || '(not provided)',
+    'Spouse Mother Dependent':   gv('pSMDep')            || '(not provided)',
+    'Spouse Mother Inheritance': gv('pSMInh')            || '(not provided)',
+
+    'CHILDREN AND BENEFICIARIES': '-----------------------',
+    'Children Beneficiaries': readChildren(),
+
+    'SECTION 2 - ESTATE PLANNING DOCUMENTS': '=======================',
+    'Last Will and Testament':        readEstate('Last Will & Testament', 0),
+    'Revocable Living Trust':         readEstate('Revocable Living Trust', 1),
+    'Irrevocable Trust':              readEstate('Irrevocable Trust', 2),
+    'Durable Power of Attorney':      readEstate('Durable Power of Attorney', 3),
+    'Healthcare Directive':           readEstate('Healthcare Directive/Living Will', 4),
+    'Beneficiary Designations':       readEstate('Beneficiary Designations', 5),
+    'Buy-Sell Agreement':             readEstate('Buy-Sell Agreement', 6),
+    'Other Estate Document':          readEstate('Other', 7),
+    'Special Needs Planning':         data.specialNeeds  || '(not provided)',
+
+    'INSURANCE COVERAGE': '-----------------------',
+    'Life Insurance Term':            readInsurance('Life Insurance Term', 0),
+    'Life Insurance Permanent':       readInsurance('Life Insurance Permanent', 1),
+    'Disability Insurance':           readInsurance('Disability Insurance', 2),
+    'Long-Term Care Insurance':       readInsurance('Long-Term Care Insurance', 3),
+    'Health Insurance':               readInsurance('Health Insurance', 4),
+    'Auto Insurance':                 readInsurance('Auto Insurance', 5),
+    'Homeowners Renters Insurance':   readInsurance('Homeowners/Renters', 6),
+    'Other Insurance':                readInsurance('Other Insurance', 7),
+
+    'PROFESSIONAL ADVISORS': '-----------------------',
+    'Attorney':                       readAdvisor('Attorney', 0),
+    'CPA Tax Advisor':                readAdvisor('CPA/Tax Advisor', 1),
+    'Investment Advisor':             readAdvisor('Investment Advisor', 2),
+    'Insurance Agent':                readAdvisor('Insurance Agent', 3),
+    'Other Advisor':                  readAdvisor('Other', 4),
+
+    'SECTION 3 - RETIREMENT VISION': '=======================',
+    'Retirement Age Client':          raVal,
+    'Retirement Age Spouse':          srVal,
+    'Retire at Same Time':            data.retireSameTime    || '(not provided)',
+    'Currently Retired':              data.currentlyRetired  || '(not provided)',
+    'Retired Since Year':             gv('retiredSinceYear') || '(not provided)',
+    'Where to Live in Retirement':    data.liveWhere         || '(not provided)',
+    'Work in Retirement':             data.workRetire        || '(not provided)',
+    'Retirement Activities':          (data.retireActivities || []).join(', ') || '(none selected)',
+    'Ideal Retirement Description':   gv('idealRetirement')  || '(not provided)',
+    'LTC Insurance':                  data.ltcInsurance      || '(not provided)',
+    'Healthcare Budget Plan':         data.healthcareBudget  || '(not provided)',
+    'Family LTC History':             data.familyLTC         || '(not provided)',
+    'Family LTC Details':             gv('familyLTCDetail')  || '(not provided)',
+    'Leave Financial Legacy':         data.leaveLegacy       || '(not provided)',
+    'Legacy Amount':                  gv('legacyAmount')     || '(not provided)',
+    'Estate Plan Status':             data.estatePlanStatus  || '(not provided)',
+    'Charitable Goals':               gv('charitableGoals')  || '(not provided)',
+    'Financial Concerns Ratings':     readConcerns(),
+
+    'SECTION 4 - MONTHLY BUDGET': '=======================',
+    'INCOME': '-----------------------',
+    'Paycheck Income':                gv('incPaycheck')      || '$0',
+    'Spouse Paycheck':                gv('incSpouse')        || '$0',
+    'Business Self-Employment':       gv('incBusiness')      || '$0',
+    'Investment Income':              gv('incInvestment')    || '$0',
+    'Rental Income':                  gv('incRental')        || '$0',
+    'Other Income':                   gv('incOther')         || '$0',
+    'TOTAL Monthly Income A':         formatDollar(incA),
+
+    'BASIC EXPENSES': '-----------------------',
+    'Mortgage or Rent':               gv('expMortgage')      || '$0',
+    'Property Taxes':                 gv('expPropTax')       || '$0',
+    'Utilities':                      gv('expUtilities')     || '$0',
+    'Groceries Food':                 gv('expGroceries')     || '$0',
+    'Clothing':                       gv('expClothing')      || '$0',
+    'Auto Loan Payments':             gv('expAutoLoan')      || '$0',
+    'Other Loan Payments':            gv('expOtherLoan')     || '$0',
+    'Credit Cards':                   gv('expCC')            || '$0',
+    'Auto Maintenance':               gv('expAutoMaint')     || '$0',
+    'Home Property Maintenance':      gv('expHomeMaint')     || '$0',
+    'TV Cable Internet Phone':        gv('expMedia')         || '$0',
+    'Childcare Tuition':              gv('expChildcare')     || '$0',
+    'Transportation Fuel Transit':    gv('expTransport')     || '$0',
+    'Life Insurance Premium':         gv('expLifeIns')       || '$0',
+    'Auto Insurance Premium':         gv('expAutoIns')       || '$0',
+    'Home Renters Insurance Premium': gv('expHomeIns')       || '$0',
+    'LTC Insurance Premium':          gv('expLTC')           || '$0',
+    'Health Medical Copays Rx':       gv('expHealthMed')     || '$0',
+    'Other Basic Expenses':           gv('expOtherBasic')    || '$0',
+    'TOTAL Basic Expenses B':         formatDollar(expB),
+
+    'DISCRETIONARY EXPENSES': '-----------------------',
+    'Dining Out':                     gv('discDining')       || '$0',
+    'Entertainment':                  gv('discEntertain')    || '$0',
+    'Hobbies':                        gv('discHobbies')      || '$0',
+    'Travel':                         gv('discTravel')       || '$0',
+    'Gifts':                          gv('discGifts')        || '$0',
+    'Charitable Giving':              gv('discCharity')      || '$0',
+    'Kids Activities':                gv('discKids')         || '$0',
+    'Other Discretionary':            gv('discOther')        || '$0',
+    'TOTAL Discretionary C':          formatDollar(discC),
+    'MONTHLY SURPLUS DEFICIT':        formatDollar(surplus),
+
+    'SAVINGS GOALS': '-----------------------',
+    'Short Term Goal 1 to 3 yrs':    gv('savingsShort')     || '(not provided)',
+    'Mid Term Goal 3 to 7 yrs':       gv('savingsMid')       || '(not provided)',
+    'Long Term Goal 7 plus yrs':      gv('savingsLong')      || '(not provided)',
+
+    'SECTION 5 - GUARANTEED INCOME': '=======================',
+    'Social Security Client':         gv('guarSSYou')        || '$0',
+    'Social Security Spouse':         gv('guarSSSpouse')     || '$0',
+    'Pension Client':                 gv('guarPensionYou')   || '$0',
+    'Pension Spouse':                 gv('guarPensionSpouse')|| '$0',
+    'Immediate Annuities':            gv('guarAnnuities')    || '$0',
+    'Other Guaranteed Income':        gv('guarOther')        || '$0',
+    'TOTAL Guaranteed Monthly Income':formatDollar(sumInputs('guar-input')),
+
+    'INVESTMENT ASSETS': '-----------------------',
+    'Taxable Brokerage':              readAsset('Taxable Brokerage', 0),
+    '401k 403b 457':                  readAsset('401k/403b/457', 1),
+    'Traditional IRA':                readAsset('Traditional IRA', 2),
+    'Roth IRA':                       readAsset('Roth IRA', 3),
+    'Deferred Annuities':             readAsset('Deferred Annuities', 4),
+    'US Government Bonds':            readAsset('US Gov Bonds', 5),
+    'Business Interests':             readAsset('Business Interests', 6),
+    'Real Estate':                    readAsset('Real Estate', 7),
+    'Cash Savings':                   readAsset('Cash/Savings', 8),
+    'Other Assets':                   readAsset('Other Assets', 9),
+    'TOTAL Investment Assets':        formatDollar(sumInputs('asset-val')),
+    'TOTAL Est Monthly Asset Income': formatDollar(sumInputs('asset-inc')),
+
+    'RETIREMENT GAP ANALYSIS': '-----------------------',
+    'Estimated Years in Retirement':  gv('gapYears')         || '(not provided)',
+    'Inflation Assumption':           gv('gapInflation')     || '(not provided)',
+    'Part Time Employment Income':    gv('gapPartTime')      || '$0',
+    'Other Retirement Income':        gv('gapOtherInc')      || '$0',
+
+    'ADVISOR NOTES': '=======================',
+    'Advisor Email':                  gv('advisorEmail')     || '(not provided)',
+    'Advisor Notes':                  gv('advisorNotes')     || '(none)',
+    'Additional Notes':               gv('advisorNote')      || '(none)',
+
+    'SUBMISSION INFO': '-----------------------',
+    'submittedAt': new Date().toLocaleString('en-US')
   };
 
   // Show loading state
@@ -1605,9 +1834,9 @@ document.getElementById('btnSubmitFormspree').addEventListener('click', function
     btn.disabled = false;
     btn.textContent = '📤 Submit All Answers to Advisor';
     if (json.success) {
-      var countdown = 5;
       resultEl.style.background = '#d1fae5';
       resultEl.style.color = '#065f46';
+      var countdown = 5;
       resultEl.textContent = 'Submitted! Resetting in ' + countdown + ' seconds...';
       var ci = setInterval(function() {
         countdown--;
