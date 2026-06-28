@@ -106,46 +106,48 @@ footer { text-align: center; padding: 18px; color: var(--text-light); font-size:
 .checkbox-row label { display: inline-flex; align-items: center; gap: 4px; font-weight: 500; cursor: pointer; }
 .stats-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0; }
 
-/* ── VPM Watermark ── */
-body::after {
-  content: 'VPM';
+/* VPM-11 Watermark */
+body::before {
+  content: 'VPM-11';
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%) rotate(-35deg);
-  font-size: 9rem;
+  font-size: 7rem;
   font-weight: 900;
-  color: rgba(26,58,108,0.035);
-  letter-spacing: 20px;
+  color: rgba(26,58,108,0.045);
+  letter-spacing: 16px;
   pointer-events: none;
   user-select: none;
   z-index: 9998;
+  white-space: nowrap;
   font-family: 'Segoe UI', sans-serif;
 }
-.vpm-badge {
+.vpm11-badge {
   position: fixed;
   bottom: 12px;
   right: 16px;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: rgba(26,58,108,0.25);
-  letter-spacing: 1.5px;
+  color: rgba(26,58,108,0.3);
+  letter-spacing: 2px;
   pointer-events: none;
   user-select: none;
   z-index: 9999;
 }
+body { -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
+input, textarea, select { -webkit-user-select:text; -moz-user-select:text; user-select:text; }
 </style>
 </head>
 <body>
-<div class="vpm-badge">VPM AVS GROUP LLC &mdash; Confidential</div>
+<div class="vpm11-badge">VPM-11 &mdash; AVS Group LLC &mdash; Confidential</div>
 <script>
 (function(){
   document.addEventListener('contextmenu',function(e){e.preventDefault();});
   document.addEventListener('keydown',function(e){
-    var k=e.key||'';
-    if(k==='F12'){e.preventDefault();return;}
-    if((e.ctrlKey||e.metaKey)&&['u','U','s','S','a','A','p','P'].indexOf(k)>-1){e.preventDefault();}
-    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','I','j','J','c','C'].indexOf(k)>-1){e.preventDefault();}
+    if(e.key==='F12'){e.preventDefault();return;}
+    if((e.ctrlKey||e.metaKey)&&['u','U','s','S','p','P'].indexOf(e.key)>-1){e.preventDefault();}
+    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','I','j','J','c','C'].indexOf(e.key)>-1){e.preventDefault();}
   });
   document.addEventListener('dragstart',function(e){e.preventDefault();});
 })();
@@ -627,10 +629,24 @@ body::after {
 <div class="stat-box"><div class="stat-label">✅ Guaranteed Monthly Income</div><div class="stat-value" id="statGuaranteed">—</div></div>
 </div>
 <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:22px 0;">
-<button class="btn-navy" id="btnViewSummary">📧 View &amp; Send Summary</button>
 <button class="btn-outline" id="btnSavePDF">🖨️ Save as PDF</button>
 </div>
-<div style="background:#f0f4fb;border-radius:10px;padding:12px 16px;margin:14px 0 6px;border-left:4px solid #f0a500;text-align:left;"><p style="font-weight:700;color:#1a3a6c;font-size:0.88rem;margin-bottom:6px;">&#128203; Recommended 2-Step Workflow</p><p style="font-size:0.85rem;color:#444;margin-bottom:4px;"><strong>Step 1:</strong> Click <strong>"&#128424;&#65039; Save as PDF"</strong> &mdash; saves the full professional report to your computer.</p><p style="font-size:0.85rem;color:#444;"><strong>Step 2:</strong> Click <strong>"&#128231; View &amp; Send Summary"</strong> &mdash; enter your advisor's email, then when your email app opens, <strong>attach the saved PDF</strong> before hitting Send.</p></div><p style="text-align:center;color:#888;font-style:italic;margin-top:8px;">Need to change something? No problem.</p>
+<div style="background:#f0f4fb;border-radius:10px;padding:16px 18px;margin:14px 0 6px;border-left:4px solid #f0a500;text-align:left;">
+  <p style="font-weight:700;color:#1a3a6c;font-size:0.92rem;margin-bottom:14px;">&#128203; Recommended 3-Step Workflow</p>
+  <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;">
+    <span style="flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:#1a3a6c;color:#fff;border-radius:50%;width:26px;height:26px;font-weight:700;font-size:0.8rem;">1</span>
+    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Save as PDF</strong> &mdash; Saves the full professional report to your computer.</span>
+  </div>
+  <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;">
+    <span style="flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:#1a3a6c;color:#fff;border-radius:50%;width:26px;height:26px;font-weight:700;font-size:0.8rem;">2</span>
+    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Attach Report to Email</strong> &mdash; Attach this report to an email and send it, along with all other documents requested, to your advisor.</span>
+  </div>
+  <div style="display:flex;align-items:flex-start;gap:10px;">
+    <span style="flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:#059669;color:#fff;border-radius:50%;width:26px;height:26px;font-weight:700;font-size:0.8rem;">3</span>
+    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Submit All Answers to Advisor</strong> &mdash; Click the green button below to send all your answers directly to your advisor.</span>
+  </div>
+</div>
+<p style="text-align:center;color:#888;font-style:italic;margin-top:8px;">Need to change something? No problem.</p>
 <div style="text-align:center;margin-top:8px;">
 <button class="btn-outline" id="btnGoBackEdit">✏️ Go Back &amp; Edit My Answers</button><hr style="border:none;border-top:1.5px solid #e5e7eb;margin:22px 0;"><div style="background:#f0f4fb;border-radius:12px;padding:20px;border:1.5px solid #d0dff0;"><p style="font-weight:700;color:#1a3a6c;font-size:1rem;margin-bottom:6px;">📤 Submit Directly to Your Advisor</p><p style="font-size:0.87rem;color:#555;margin-bottom:14px;">When the client is ready, click below to send all their answers directly to your email — no email app needed.</p><button class="btn-navy" id="btnSubmitFormspree" style="width:100%;background:#059669;font-size:1.05rem;padding:14px;">📤 Submit All Answers to Advisor</button><div id="submitResult" style="margin-top:10px;font-size:0.9rem;font-weight:600;text-align:center;display:none;padding:10px;border-radius:8px;"></div></div>
 </div>
@@ -1058,11 +1074,6 @@ document.getElementById('statGuaranteed').textContent = formatDollar(sumInputs('
 }
 
 // ---- SUMMARY MODAL ----
-document.getElementById('btnViewSummary').addEventListener('click', function() {
-buildSummaryModal();
-var m = document.getElementById('summaryModal');
-m.style.display = 'flex';
-});
 document.getElementById('modalCloseBtn').addEventListener('click', function() {
 document.getElementById('summaryModal').style.display = 'none';
 });
@@ -1580,64 +1591,110 @@ document.getElementById('btnSavePDF').addEventListener('click', function() {
 // ---- FORMSPREE SUBMIT ----
 document.getElementById('btnSubmitFormspree').addEventListener('click', function() {
   var resultEl = document.getElementById('submitResult');
-  var btn = document.getElementById('btnSubmitFormspree');
+  var btn      = document.getElementById('btnSubmitFormspree');
 
-  // Collect all form values
+  var incA    = sumInputs('income-input');
+  var expB    = sumInputs('expense-input');
+  var discC   = sumInputs('disc-input');
+  var surplus = incA - expB - discC;
+
   var payload = {
     access_key: 'b1a2410b-f2ea-424f-a771-bf63a9454cb3',
-    subject: 'FPQ - ' + (gv('clientName') || 'Client'),
-    from_name: 'Financial Planning Questionnaire',
-    // Section 1 - Client Profile
-    clientName:       gv('clientName'),
-    clientDOB:        gv('clientDOB'),
-    clientMarital:    data.clientMarital || '',
-    clientGender:     data.clientGender || '',
-    clientState:      gv('clientState'),
-    clientCitizen:    data.clientCitizen || '',
-    clientOccupation: gv('clientOccupation'),
-    clientHealth:     data.clientHealth || '',
-    clientSmoker:     data.clientSmoker || '',
-    // Spouse
-    spouseName:       gv('spouseName'),
-    spouseDOB:        gv('spouseDOB'),
-    spouseOccupation: gv('spouseOccupation'),
-    spouseHealth:     data.spouseHealth || '',
-    // Section 3 - Retirement
-    retirementAge:    gv('retireAge'),
-    spouseRetireAge:  gv('spouseRetireAge'),
-    currentlyRetired: data.currentlyRetired || '',
-    liveWhere:        data.liveWhere || '',
-    workRetire:       data.workRetire || '',
-    activities:       (data.retireActivities || []).join(', '),
-    idealRetirement:  gv('idealRetirement'),
-    ltcInsurance:     data.ltcInsurance || '',
-    leaveLegacy:      data.leaveLegacy || '',
-    legacyAmount:     gv('legacyAmount'),
-    estatePlanStatus: data.estatePlanStatus || '',
-    // Section 4 - Budget
-    totalIncome:        formatDollar(sumInputs('income-input')),
-    totalBasicExp:      formatDollar(sumInputs('expense-input')),
-    totalDiscretionary: formatDollar(sumInputs('disc-input')),
-    monthlySurplus:     formatDollar(sumInputs('income-input') - sumInputs('expense-input') - sumInputs('disc-input')),
-    savingsShortTerm:   gv('savingsShort'),
-    savingsMidTerm:     gv('savingsMid'),
-    savingsLongTerm:    gv('savingsLong'),
-    // Section 5 - Assets
-    totalGuaranteedIncome: formatDollar(sumInputs('guar-input')),
-    totalAssets:           formatDollar(sumInputs('asset-val')),
-    yearsInRetirement:     gv('gapYears'),
-    inflationAssumption:   gv('gapInflation'),
-    advisorNotes:          gv('advisorNotes'),
-    // Submission info
-    submittedAt: new Date().toLocaleString('en-US')
+    subject:    'New Financial Planning Questionnaire — ' + (gv('clientName') || 'Client'),
+    from_name:  'Financial Planning Questionnaire',
+
+    // === SECTION 1: CLIENT PROFILE ===
+    'Full Name':                 gv('clientName')            || '(not provided)',
+    'Date of Birth':             gv('clientDOB')             || '(not provided)',
+    'Marital Status':            data.clientMarital          || '(not provided)',
+    'Gender':                    data.clientGender           || '(not provided)',
+    'State of Domicile':         gv('clientState')           || '(not provided)',
+    'U.S. Citizen':              data.clientCitizen          || '(not provided)',
+    'Occupation':                gv('clientOccupation')      || '(not provided)',
+    'Health Status':             data.clientHealth           || '(not provided)',
+    'Smoker':                    data.clientSmoker           || '(not provided)',
+
+    // === SPOUSE ===
+    'Spouse Full Name':          gv('spouseName')            || '(not provided)',
+    'Spouse Date of Birth':      gv('spouseDOB')             || '(not provided)',
+    'Spouse Occupation':         gv('spouseOccupation')      || '(not provided)',
+    'Spouse Health':             data.spouseHealth           || '(not provided)',
+
+    // === SECTION 3: RETIREMENT VISION ===
+    'Target Retirement Age':     gv('retireAge')             || '(not provided)',
+    'Spouse Retirement Age':     gv('spouseRetireAge')       || '(not provided)',
+    'Currently Retired':         data.currentlyRetired       || '(not provided)',
+    'Where to Live':             data.liveWhere              || '(not provided)',
+    'Work in Retirement':        data.workRetire             || '(not provided)',
+    'Retirement Activities':     (data.retireActivities||[]).join(', ') || '(none)',
+    'Ideal Retirement':          gv('idealRetirement')       || '(not provided)',
+    'LTC Insurance':             data.ltcInsurance           || '(not provided)',
+    'Leave Legacy':              data.leaveLegacy            || '(not provided)',
+    'Legacy Amount':             gv('legacyAmount')          || '(not provided)',
+    'Estate Plan Status':        data.estatePlanStatus       || '(not provided)',
+
+    // === SECTION 4: MONTHLY BUDGET ===
+    'Income — Paycheck(s)':      gv('incPaycheck')           || '$0',
+    'Income — Spouse':           gv('incSpouse')             || '$0',
+    'Income — Business':         gv('incBusiness')           || '$0',
+    'Income — Investment':       gv('incInvestment')         || '$0',
+    'Income — Rental':           gv('incRental')             || '$0',
+    'Income — Other':            gv('incOther')              || '$0',
+    'TOTAL Monthly Income (A)':  formatDollar(incA),
+    'Expense — Mortgage/Rent':   gv('expMortgage')           || '$0',
+    'Expense — Property Tax':    gv('expPropTax')            || '$0',
+    'Expense — Utilities':       gv('expUtilities')          || '$0',
+    'Expense — Groceries':       gv('expGroceries')          || '$0',
+    'Expense — Clothing':        gv('expClothing')           || '$0',
+    'Expense — Auto Loan':       gv('expAutoLoan')           || '$0',
+    'Expense — Other Loans':     gv('expOtherLoan')          || '$0',
+    'Expense — Credit Cards':    gv('expCC')                 || '$0',
+    'Expense — Auto Maint':      gv('expAutoMaint')          || '$0',
+    'Expense — Home Maint':      gv('expHomeMaint')          || '$0',
+    'Expense — Media/Phone':     gv('expMedia')              || '$0',
+    'Expense — Childcare':       gv('expChildcare')          || '$0',
+    'Expense — Transport':       gv('expTransport')          || '$0',
+    'Expense — Life Insurance':  gv('expLifeIns')            || '$0',
+    'Expense — Auto Insurance':  gv('expAutoIns')            || '$0',
+    'Expense — Home Insurance':  gv('expHomeIns')            || '$0',
+    'Expense — LTC Insurance':   gv('expLTC')                || '$0',
+    'Expense — Health/Medical':  gv('expHealthMed')          || '$0',
+    'Expense — Other Basic':     gv('expOtherBasic')         || '$0',
+    'TOTAL Basic Expenses (B)':  formatDollar(expB),
+    'Disc — Dining Out':         gv('discDining')            || '$0',
+    'Disc — Entertainment':      gv('discEntertain')         || '$0',
+    'Disc — Hobbies':            gv('discHobbies')           || '$0',
+    'Disc — Travel':             gv('discTravel')            || '$0',
+    'Disc — Gifts':              gv('discGifts')             || '$0',
+    'Disc — Charitable':         gv('discCharity')           || '$0',
+    'Disc — Kids Activities':    gv('discKids')              || '$0',
+    'Disc — Other':              gv('discOther')             || '$0',
+    'TOTAL Discretionary (C)':   formatDollar(discC),
+    'MONTHLY SURPLUS/(DEFICIT)': formatDollar(surplus),
+    'Savings — Short Term':      gv('savingsShort')          || '(not provided)',
+    'Savings — Mid Term':        gv('savingsMid')            || '(not provided)',
+    'Savings — Long Term':       gv('savingsLong')           || '(not provided)',
+
+    // === SECTION 5: RETIREMENT INCOME & ASSETS ===
+    'SS Income — Client':        gv('guarSSYou')             || '$0',
+    'SS Income — Spouse':        gv('guarSSSpouse')          || '$0',
+    'Pension — Client':          gv('guarPensionYou')        || '$0',
+    'Pension — Spouse':          gv('guarPensionSpouse')     || '$0',
+    'Annuities':                 gv('guarAnnuities')         || '$0',
+    'Other Guaranteed Income':   gv('guarOther')             || '$0',
+    'TOTAL Guaranteed Income':   formatDollar(sumInputs('guar-input')),
+    'TOTAL Assets':              formatDollar(sumInputs('asset-val')),
+    'Years in Retirement':       gv('gapYears')              || '(not provided)',
+    'Inflation Assumption':      gv('gapInflation')          || '(not provided)',
+    'Advisor Notes':             gv('advisorNotes')          || '(none)',
+
+    'Submitted At':              new Date().toLocaleString('en-US')
   };
 
-  // Show loading state
   btn.disabled = true;
   btn.textContent = 'Sending... ⏳';
   resultEl.style.display = 'none';
 
-  // POST to Formspree
   fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -1648,40 +1705,48 @@ document.getElementById('btnSubmitFormspree').addEventListener('click', function
     btn.disabled = false;
     btn.textContent = '📤 Submit All Answers to Advisor';
     if (json.success) {
+      var countdown = 5;
       resultEl.style.background = '#d1fae5';
       resultEl.style.color = '#065f46';
-      var countdown = 5;
-      resultEl.textContent = 'Submitted! Resetting in ' + countdown + ' seconds...';
+      resultEl.textContent = '✅ Submitted! Resetting form in ' + countdown + ' seconds...';
+      resultEl.style.display = 'block';
       var ci = setInterval(function() {
         countdown--;
         if (countdown > 0) {
-          resultEl.textContent = 'Resetting in ' + countdown + (countdown===1?' second':' seconds') + '...';
+          resultEl.textContent = '✅ Submitted! Resetting form in ' + countdown + ' second' + (countdown===1?'':'s') + '...';
         } else {
           clearInterval(ci);
-          document.querySelectorAll('input[type=text],input[type=number],input[type=email],input[type=date]').forEach(function(el){el.value='';});
-          document.querySelectorAll('textarea').forEach(function(el){el.value='';});
-          document.querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
-          document.querySelectorAll('input[type=checkbox]').forEach(function(el){el.checked=false;});
-          document.querySelectorAll('.pill-btn.selected,.card-option.selected').forEach(function(el){el.classList.remove('selected');});
-          var cl=document.getElementById('childrenList'); if(cl) cl.innerHTML='';
-          var sp=document.getElementById('spouseSection'); if(sp) sp.style.display='none';
-          resultEl.style.display='none';
-          window.data={}; showStep(0);
+          // Reset all form fields
+          document.querySelectorAll('input[type="text"],input[type="number"],input[type="email"],input[type="date"]')
+            .forEach(function(el){ el.value=''; });
+          document.querySelectorAll('textarea').forEach(function(el){ el.value=''; });
+          document.querySelectorAll('select').forEach(function(el){ el.selectedIndex=0; });
+          document.querySelectorAll('input[type="checkbox"]').forEach(function(el){ el.checked=false; });
+          document.querySelectorAll('.pill-btn.selected,.card-option.selected').forEach(function(el){
+            el.classList.remove('selected');
+          });
+          var cl = document.getElementById('childrenList');
+          if (cl) cl.innerHTML = '';
+          var sp = document.getElementById('spouseSection');
+          if (sp) sp.style.display = 'none';
+          resultEl.style.display = 'none';
+          window.data = {};
+          showStep(0);
         }
       }, 1000);
     } else {
       resultEl.style.background = '#fee2e2';
       resultEl.style.color = '#991b1b';
-      resultEl.textContent = '⚠️ Submission failed: ' + (json.error || 'Please try again or use the Send to Advisor option.');
+      resultEl.textContent = '⚠️ Submission failed: ' + (json.message || 'Please try again.');
+      resultEl.style.display = 'block';
     }
-    resultEl.style.display = 'block';
   })
-  .catch(function(err) {
+  .catch(function() {
     btn.disabled = false;
     btn.textContent = '📤 Submit All Answers to Advisor';
     resultEl.style.background = '#fee2e2';
     resultEl.style.color = '#991b1b';
-    resultEl.textContent = '⚠️ Could not connect. Please check your internet connection and try again.';
+    resultEl.textContent = '⚠️ Network error. Please check your connection and try again.';
     resultEl.style.display = 'block';
   });
 });
