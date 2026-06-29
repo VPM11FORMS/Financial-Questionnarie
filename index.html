@@ -635,20 +635,28 @@ input, textarea, select { -webkit-user-select:text; -moz-user-select:text; user-
   <p style="font-weight:700;color:#1a3a6c;font-size:0.92rem;margin-bottom:14px;">&#128203; Recommended 3-Step Workflow</p>
   <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;">
     <span style="flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:#1a3a6c;color:#fff;border-radius:50%;width:26px;height:26px;font-weight:700;font-size:0.8rem;">1</span>
-    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Save as PDF</strong> &mdash; Saves the full professional report to your computer.</span>
+    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Save as PDF</strong> &mdash; Save the full professional report to your computer.</span>
   </div>
   <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;">
     <span style="flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:#1a3a6c;color:#fff;border-radius:50%;width:26px;height:26px;font-weight:700;font-size:0.8rem;">2</span>
-    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Attach Report to Email</strong> &mdash; Attach this report to an email and send it, along with all other documents requested, to your advisor.</span>
+    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Upload Your Supporting Documents</strong> &mdash; Upload your supporting documents including your professional report using the green Box button below, and attach all the requested documents to be sent to your advisor.</span>
   </div>
   <div style="display:flex;align-items:flex-start;gap:10px;">
     <span style="flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:#059669;color:#fff;border-radius:50%;width:26px;height:26px;font-weight:700;font-size:0.8rem;">3</span>
-    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Submit All Answers to Advisor</strong> &mdash; Click the green button below to send all your answers directly to your advisor.</span>
+    <span style="font-size:0.87rem;color:#444;padding-top:3px;"><strong>Submit All Your Answers to Your Advisor</strong> &mdash; Click the green Submit button below to send all your answers directly to your advisor.</span>
   </div>
+</div>
+<div style="background:#edf7f0;border-radius:10px;padding:16px 18px;margin:18px 0 6px;border-left:4px solid #059669;text-align:left;">
+  <p style="font-weight:700;color:#1a3a6c;font-size:0.92rem;margin-bottom:6px;">&#128462;&#65039; Supporting Documents</p>
+  <p style="font-size:0.85rem;color:#555;margin-bottom:14px;">Upload your tax returns, bank statements, insurance policies, or any other documents your advisor requested.</p>
+  <div style="text-align:center;">
+    <a href="https://app.box.com/f/28410801b8c6496db154d4daa3911cd8" target="_blank" rel="noopener" style="display:inline-block;background:#059669;color:#fff;font-weight:700;font-size:0.97rem;padding:12px 28px;border-radius:10px;text-decoration:none;letter-spacing:0.3px;">&#128206; Upload Your Supporting Documents</a>
+  </div>
+  <p style="font-size:0.78rem;color:#777;text-align:center;margin-top:10px;">&#128274; Secured by Box &mdash; No Box account required &mdash; Opens in a new tab</p>
 </div>
 <p style="text-align:center;color:#888;font-style:italic;margin-top:8px;">Need to change something? No problem.</p>
 <div style="text-align:center;margin-top:8px;">
-<button class="btn-outline" id="btnGoBackEdit">✏️ Go Back &amp; Edit My Answers</button><hr style="border:none;border-top:1.5px solid #e5e7eb;margin:22px 0;"><div style="background:#f0f4fb;border-radius:12px;padding:20px;border:1.5px solid #d0dff0;"><p style="font-weight:700;color:#1a3a6c;font-size:1rem;margin-bottom:6px;">📤 Submit Directly to Your Advisor</p><p style="font-size:0.87rem;color:#555;margin-bottom:14px;">When the client is ready, click below to send all their answers directly to your email — no email app needed.</p><button class="btn-navy" id="btnSubmitFormspree" style="width:100%;background:#059669;font-size:1.05rem;padding:14px;">📤 Submit All Answers to Advisor</button><div id="submitResult" style="margin-top:10px;font-size:0.9rem;font-weight:600;text-align:center;display:none;padding:10px;border-radius:8px;"></div></div>
+<button class="btn-outline" id="btnGoBackEdit">✏️ Go Back &amp; Edit My Answers</button><hr style="border:none;border-top:1.5px solid #e5e7eb;margin:22px 0;"><div style="background:#f0f4fb;border-radius:12px;padding:20px;border:1.5px solid #d0dff0;"><p style="font-weight:700;color:#1a3a6c;font-size:1.05rem;margin-bottom:8px;text-align:center;">&#128640; Ready to Send Your Answers?</p><p style="font-size:0.88rem;color:#555;margin-bottom:6px;text-align:center;">We are excited to receive your information!</p><p style="font-size:0.85rem;color:#555;margin-bottom:6px;text-align:center;">We'd love to send all your answers directly to your advisor.</p><p style="font-size:0.83rem;color:#888;margin-bottom:16px;text-align:center;font-style:italic;">Once you submit all your answers, the questionnaire will reset to the first page.</p><div style="text-align:center;"><button class="btn-navy" id="btnSubmitFormspree" style="width:auto;min-width:320px;background:#059669;font-size:1.05rem;padding:14px 36px;display:inline-block;text-align:center;">&#128228; Submit All Answers to Advisor</button></div><div id="submitResult" style="margin-top:10px;font-size:0.9rem;font-weight:600;text-align:center;display:none;padding:10px;border-radius:8px;"></div></div>
 </div>
 <div class="conf-box">🔒 This questionnaire is confidential and intended solely for use by the client and their authorized financial advisor.</div>
 </div>
@@ -1708,12 +1716,12 @@ document.getElementById('btnSubmitFormspree').addEventListener('click', function
       var countdown = 5;
       resultEl.style.background = '#d1fae5';
       resultEl.style.color = '#065f46';
-      resultEl.textContent = '✅ Submitted! Resetting form in ' + countdown + ' seconds...';
+      resultEl.textContent = '✅ Thank you! Your answers have been sent to your advisor. Returning to the beginning in ' + countdown + ' second' + (countdown===1?'':'s') + '...';
       resultEl.style.display = 'block';
       var ci = setInterval(function() {
         countdown--;
         if (countdown > 0) {
-          resultEl.textContent = '✅ Submitted! Resetting form in ' + countdown + ' second' + (countdown===1?'':'s') + '...';
+          resultEl.textContent = '✅ Thank you! Your answers have been sent to your advisor. Returning to the beginning in ' + countdown + ' second' + (countdown===1?'':'s') + '...';
         } else {
           clearInterval(ci);
           // Reset all form fields
